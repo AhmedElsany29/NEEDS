@@ -40,10 +40,10 @@ st.markdown("""
 
 /* اتجاه وخلفية */
 html, body, [data-testid="stAppViewContainer"]{
-  direction:rtl; background:#FFFFFF; color:var(--PRIMARY); overflow-x: hidden; /* Prevent horizontal overflow */
+  direction:rtl; background:#FFFFFF; color:var(--PRIMARY); overflow-x: hidden; /* منع التمرير الأفقي غير الضروري */
 }
 [data-testid="stHeader"]{background:transparent}
-.block-container{max-width:100%; padding-top:.5rem; width:100%; margin:0 auto;}
+.block-container{max-width:100%; padding-top:.5rem; width:100%; margin:0 auto; padding-left:0; padding-right:0;} /* إزالة الهوامش الجانبية */
 
 /* العنوان */
 h1.title{
@@ -59,10 +59,6 @@ h1.title{
   background:var(--PRIMARY) !important; color:#fff !important; border:none !important;
 }
 .top-actions button:hover{background:var(--PRIMARY_DARK) !important}
-
-/* عناوين الأقسام والليبلز */
-.section-title{font-weight:800; font-size:1.25rem; margin:12px 0;color:var(--TITLE_BLUE)}
-label p{font-size:1rem; font-weight:700; color:var(--TITLE_BLUE)}
 
 /* الحقول */
 [data-testid="stTextInput"] input,
@@ -85,8 +81,7 @@ button[kind="primary"]{
 }
 button[kind="primary"]:hover{background:var(--PRIMARY_DARK) !important}
 
-/* رسائل الخطأ لتظهر بوضوح */
-[data-testid="stNotification"] div[role="alert"],
+/* رسائل الخطأ */
 div.stAlert div[role="alert"]{
   background:#FFE7E7 !important;
   border:2px solid #E53935 !important;
@@ -94,11 +89,11 @@ div.stAlert div[role="alert"]{
   border-radius:12px; padding:12px;
 }
 
-/* جدول HTML المخصص بألوان واضحة */
+/* جدول HTML المخصص */
 .needs-wrap{margin-top:10px; width:100%; box-sizing:border-box;}
 .needs-row{
-  display:grid;
-  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* Flexible ratios */
+  display:flex;
+  flex-wrap:nowrap; /* منع الالتفاف */
   gap:4px;
   align-items:center;
   padding:8px;
@@ -108,11 +103,12 @@ div.stAlert div[role="alert"]{
   background:#E3F2FD !important;
   min-height: 50px;
   color: #0f172a;
-  width:100%; /* Ensure full width */
+  width:100%;
+  overflow-x: auto; /* تمرير أفقي إذا لزم */
 }
 .needs-header{
-  display:grid;
-  grid-template-columns: 2fr 1fr 1fr 0.5fr;
+  display:flex;
+  flex-wrap:nowrap;
   gap:4px;
   align-items:center;
   padding:8px;
@@ -122,14 +118,16 @@ div.stAlert div[role="alert"]{
   color:var(--TITLE_BLUE);
   font-weight:800;
   border: 2px solid var(--PRIMARY);
+  overflow-x: auto;
 }
 .needs-item{
   font-weight:700;
   color: inherit;
   font-size: 1rem;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis for long text */
+  text-overflow: ellipsis;
+  flex:1; /* مرن */
 }
 .done{text-decoration:line-through; color:#9CA3AF}
 .center-title{
@@ -144,53 +142,40 @@ div.stAlert div[role="alert"]{
   font-weight:800;
 }
 
-/* تنسيق الأزرار الصغيرة في الجدول */
-.action-buttons {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-}
-
-/* زر الحذف الأحمر */
+/* زر الحذف */
 button[data-testid="baseButton-secondary"] {
   background: #dc2626 !important;
   color: white !important;
   border: none !important;
   border-radius: 6px !important;
   padding: 6px 10px !important;
-  font-size: 12px !important; /* Smaller for mobile */
+  font-size: 12px !important;
   cursor: pointer !important;
   height: auto !important;
   min-height: 30px !important;
 }
 
-button[data-testid="baseButton-secondary"]:hover {
-  background: #b91c1c !important;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3) !important;
+/* override responsiveness for st.columns to keep horizontal on mobile */
+div.row-widget.stHorizontal {
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  min-width: 100%; /* ضمان العرض الكامل */
+}
+[data-testid="column"] {
+  flex: none !important;
+  min-width: 80px; /* حد أدنى للعرض لكل عمود */
+  padding: 0 4px; /* تقليل الهوامش */
+  box-sizing: border-box;
 }
 
-/* ضمان أن النصوص في الجدول واضحة */
-[data-testid="stMarkdown"] p, 
-[data-testid="stMarkdown"] div,
-.needs-item,
-.needs-header div {
-  color: inherit !important;
-  background: transparent !important;
-}
-
-/* Media queries for mobile responsiveness */
+/* Media queries for mobile */
 @media (max-width: 600px) {
-  .top-actions {flex-direction:column; gap:6px;}
-  .top-actions button {width:100%; height:40px; font-size:0.9rem;}
-  .needs-row {grid-template-columns: 2fr 1fr 1fr 0.5fr; padding:6px; font-size:0.9rem;}
-  .needs-header {grid-template-columns: 2fr 1fr 1fr 0.5fr; padding:6px; font-size:0.9rem;}
-  button[kind="primary"] {height:40px; font-size:0.9rem;}
-  [data-testid="stTextInput"] input, [data-testid="stSelectbox"] div[role="combobox"] {height:40px; font-size:0.9rem; padding:8px;}
+  .top-actions {flex-direction:row; gap:4px; /* keep horizontal */}
+  .top-actions button {height:40px; font-size:0.9rem;}
+  div.row-widget.stHorizontal {flex-wrap: nowrap !important; overflow-x: auto !important;}
+  [data-testid="column"] {min-width: 60px; /* تقليل للموبايل */}
   .needs-item {font-size:0.85rem;}
-  .block-container {padding:0 10px;} /* Add padding for mobile */
-  html, body {overflow-x: hidden; max-width: 100vw;}
+  .block-container {padding:0 5px;}
 }
 </style>
 """, unsafe_allow_html=True)
@@ -283,16 +268,16 @@ def render_needs_table_todo(df: pd.DataFrame):
         row_container = st.container()
         
         with row_container:
-            col1, col2, col3, col4 = st.columns([2, 1, 1, 0.5])  # Adjusted column ratios
+            col1, col2, col3, col4 = st.columns([3, 1, 1.5, 1])  # نسب محسنة للعرض الكامل
             with col1:
-                st.markdown(f'<div class="needs-item" style="padding: 6px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="needs-item" style="padding: 4px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
             with col2:
                 status = r.get('حالته', '-')
-                st.markdown(f'<div style="padding: 6px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="padding: 4px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
             with col3:
                 day = r.get('اليوم', '-')
                 datev = r.get('التاريخ', '-')
-                st.markdown(f'<div style="padding: 6px; text-align: center; font-size: 0.9em;">{html_lib.escape(str(day))}<br/>{html_lib.escape(str(datev))}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em;">{html_lib.escape(str(day))}<br/>{html_lib.escape(str(datev))}</div>', unsafe_allow_html=True)
             with col4:
                 del_key = f"del_btn__{idx}"
                 if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
