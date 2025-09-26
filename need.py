@@ -274,10 +274,6 @@ def render_needs_table_todo(df: pd.DataFrame):
             with col2:
                 status = r.get('حالته', '-')
                 st.markdown(f'<div style="padding: 4px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
-            with col3:
-                day = r.get('اليوم', '-')
-                datev = r.get('التاريخ', '-')
-                st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em;">{html_lib.escape(str(day))}<br/>{html_lib.escape(str(datev))}</div>', unsafe_allow_html=True)
             with col4:
                 del_key = f"del_btn__{idx}"
                 if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
