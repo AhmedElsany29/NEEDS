@@ -6,7 +6,7 @@ import requests
 import pandas as pd
 import streamlit as st
 import html as html_lib
-from datetime import date
+from datetime import date  # إضافة الاستيراد هنا
 
 # ===================== Google Form (الإرسال) =====================
 FORM_ACTION_URL = (
@@ -15,7 +15,6 @@ FORM_ACTION_URL = (
 )
 ENTRY_MISSING = "entry.178037744"   # النواقص
 ENTRY_DAY     = "entry.206469232"   # اليوم
-ENTRY_DATE    = "entry.1804099316"  # التاريخ
 ENTRY_STATUS  = "entry.1422450525"  # حالته
 
 # ===================== Google Sheet (العرض) =====================
@@ -40,18 +39,14 @@ st.markdown("""
 
 /* اتجاه وخلفية */
 html, body, [data-testid="stAppViewContainer"]{
-  direction:rtl; background:#FFFFFF; color:var(--PRIMARY); overflow-x: hidden; /* منع التمرير الأفقي غير الضروري */
+  direction:rtl; background:#FFFFFF; color:var(--PRIMARY); overflow-x: hidden;
 }
 [data-testid="stHeader"]{background:transparent}
-.block-container{max-width:100%; padding-top:.5rem; width:100%; margin:0 auto; padding-left:0; padding-right:0;} /* إزالة الهوامش الجانبية */
-
-/* العنوان */
+.block-container{max-width:100%; padding-top:.5rem; width:100%; margin:0 auto; padding-left:0; padding-right:0;}
 h1.title{
   font-size:2.4rem;font-weight:800;text-align:center;margin:0 0 1rem;
   color:var(--TITLE_BLUE);
 }
-
-/* أزرار الملاحة */
 .top-actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:6px 0 16px}
 .top-actions button{
   flex:1; height:50px; border-radius:12px;
@@ -59,8 +54,8 @@ h1.title{
   background:var(--PRIMARY) !important; color:#fff !important; border:none !important;
 }
 .top-actions button:hover{background:var(--PRIMARY_DARK) !important}
-
-/* الحقول */
+.section-title{font-weight:800; font-size:1.25rem; margin:12px 0;color:var(--TITLE_BLUE)}
+label p{font-size:1rem; font-weight:700; color:var(--TITLE_BLUE)}
 [data-testid="stTextInput"] input,
 [data-testid="stSelectbox"] div[role="combobox"]{
   background:#fff !important; color:var(--TITLE_BLUE) !important;
@@ -72,28 +67,22 @@ h1.title{
   border-color:var(--PRIMARY); box-shadow:0 0 0 3px rgba(240,119,242,.15);
 }
 ::placeholder{color:#6aa6ff!important; opacity:1}
-
-/* زر أساسي */
 button[kind="primary"]{
   background:var(--PRIMARY) !important; color:#fff !important; border:none !important;
   border-radius:12px !important; height:50px !important; font-weight:800 !important; font-size:1rem !important;
   width:100%;
 }
 button[kind="primary"]:hover{background:var(--PRIMARY_DARK) !important}
-
-/* رسائل الخطأ */
 div.stAlert div[role="alert"]{
   background:#FFE7E7 !important;
   border:2px solid #E53935 !important;
   color:#B71C1C !important;
   border-radius:12px; padding:12px;
 }
-
-/* جدول HTML المخصص */
 .needs-wrap{margin-top:10px; width:100%; box-sizing:border-box;}
 .needs-row{
   display:flex;
-  flex-wrap:nowrap; /* منع الالتفاف */
+  flex-wrap:nowrap;
   gap:4px;
   align-items:center;
   padding:8px;
@@ -104,7 +93,7 @@ div.stAlert div[role="alert"]{
   min-height: 50px;
   color: #0f172a;
   width:100%;
-  overflow-x: auto; /* تمرير أفقي إذا لزم */
+  overflow-x: auto;
 }
 .needs-header{
   display:flex;
@@ -127,7 +116,7 @@ div.stAlert div[role="alert"]{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex:1; /* مرن */
+  flex:1;
 }
 .done{text-decoration:line-through; color:#9CA3AF}
 .center-title{
@@ -141,39 +130,33 @@ div.stAlert div[role="alert"]{
   margin:6px 0 12px; 
   font-weight:800;
 }
-
-/* زر الحذف */
 button[data-testid="baseButton-secondary"] {
   background: #dc2626 !important;
   color: white !important;
   border: none !important;
-  border-radius: 6px !important;
+  border-radius:6px !important;
   padding: 6px 10px !important;
   font-size: 12px !important;
   cursor: pointer !important;
   height: auto !important;
   min-height: 30px !important;
 }
-
-/* override responsiveness for st.columns to keep horizontal on mobile */
 div.row-widget.stHorizontal {
   flex-wrap: nowrap !important;
   overflow-x: auto !important;
-  min-width: 100%; /* ضمان العرض الكامل */
+  min-width: 100%;
 }
 [data-testid="column"] {
   flex: none !important;
-  min-width: 80px; /* حد أدنى للعرض لكل عمود */
-  padding: 0 4px; /* تقليل الهوامش */
+  min-width: 80px;
+  padding: 0 4px;
   box-sizing: border-box;
 }
-
-/* Media queries for mobile */
 @media (max-width: 600px) {
-  .top-actions {flex-direction:row; gap:4px; /* keep horizontal */}
+  .top-actions {flex-direction:row; gap:4px;}
   .top-actions button {height:40px; font-size:0.9rem;}
   div.row-widget.stHorizontal {flex-wrap: nowrap !important; overflow-x: auto !important;}
-  [data-testid="column"] {min-width: 60px; /* تقليل للموبايل */}
+  [data-testid="column"] {min-width: 60px;}
   .needs-item {font-size:0.85rem;}
   .block-container {padding:0 5px;}
 }
@@ -183,13 +166,13 @@ div.row-widget.stHorizontal {
 st.markdown('<h1 class="title">النواقص</h1>', unsafe_allow_html=True)
 
 # ===================== أدوات مساعدة =====================
-AR_DAY_NAMES = {0:"الإثنين",1:"الثلاثاء",2:"الأربعاء",3:"الخميس",4:"الجمعة",5:"السبت",6:"الأحد"}
+AR_DAY_NAMES = {0:"الإثنين", 1:"الثلاثاء", 2:"الأربعاء", 3:"الخميس", 4:"الجمعة", 5:"السبت", 6:"الأحد"}
 
 CHECK_TTL_SECONDS = 24 * 3600  # 24 ساعة
 
-def today_ar_and_iso():
-    d = date.today()
-    return AR_DAY_NAMES.get(d.weekday(), ""), d.strftime("%Y-%m-%d")
+def today_ar():
+    d = date.today()  # الآن يعمل بفضل الاستيراد
+    return AR_DAY_NAMES.get(d.weekday(), "")
 
 @st.cache_data(ttl=60)
 def fetch_responses_csv(url: str) -> pd.DataFrame:
@@ -205,11 +188,10 @@ def fetch_responses_csv(url: str) -> pd.DataFrame:
     return df
 
 def submit_to_form(missing_text: str, status_value: str) -> bool:
-    day_ar, date_iso = today_ar_and_iso()
+    day_ar = today_ar()  # اليوم فقط
     payload = {
         ENTRY_MISSING: missing_text.strip(),
         ENTRY_DAY: day_ar,
-        ENTRY_DATE: date_iso,
         ENTRY_STATUS: status_value,
     }
     headers = {
@@ -246,14 +228,14 @@ def render_needs_table_todo(df: pd.DataFrame):
     if "النواقص" in df.columns:
         df = df.dropna(subset=["النواقص"]).drop_duplicates(subset=["النواقص"], keep="first")
 
-    cols = [c for c in ["النواقص", "حالته", "اليوم", "التاريخ"] if c in df.columns]
+    cols = [c for c in ["النواقص", "حالته", "اليوم"] if c in df.columns]
     if not cols:
         st.info("لا توجد بيانات بعد.")
         return
 
     st.markdown('<div class="center-title">قائمة النواقص</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="needs-header" dir="rtl"><div>النواقص</div><div>الحالة</div><div>اليوم/التاريخ</div><div>إجراءات</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="needs-header" dir="rtl"><div>النواقص</div><div>الحالة</div><div>اليوم</div><div>إجراءات</div></div>', unsafe_allow_html=True)
 
     for idx, r in df.iterrows():
         raw_value = r.get("النواقص", "-")
@@ -268,12 +250,15 @@ def render_needs_table_todo(df: pd.DataFrame):
         row_container = st.container()
         
         with row_container:
-            col1, col2, col3, col4 = st.columns([3, 1, 1.5, 1])  # نسب محسنة للعرض الكامل
+            col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
             with col1:
                 st.markdown(f'<div class="needs-item" style="padding: 4px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
             with col2:
                 status = r.get('حالته', '-')
                 st.markdown(f'<div style="padding: 4px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
+            with col3:
+                day = r.get('اليوم', '-')
+                st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em;">{html_lib.escape(str(day))}</div>', unsafe_allow_html=True)
             with col4:
                 del_key = f"del_btn__{idx}"
                 if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
@@ -307,10 +292,9 @@ if view == "add":
     status_index_default = options.index("خلص")
     status = st.selectbox("حالته *", options, index=status_index_default)
 
-    left, right = st.columns(2)
-    dname, diso = today_ar_and_iso()
-    left.write(f"**التاريخ:** {diso or '-'}")
-    right.write(f"**اليوم:** {dname or '-'}")
+    left = st.columns(1)[0]
+    dname = today_ar()  # اليوم فقط
+    left.write(f"**اليوم:** {dname or '-'}")
 
     if st.button("حفظ", use_container_width=True, type="primary"):
         if not missing.strip():
