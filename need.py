@@ -83,12 +83,12 @@ div.stAlert div[role="alert"]{
 .needs-row{
   display:flex;
   flex-wrap:nowrap;
-  gap:4px;
+  gap:2px; /* تقليل المسافة بين الأعمدة */
   align-items:center;
-  padding:8px;
+  padding:6px;
   border-radius:8px;
   border:1px solid #E3F2FD;
-  margin-bottom:6px;
+  margin-bottom:4px;
   background:#E3F2FD !important;
   min-height: 50px;
   color: #0f172a;
@@ -98,11 +98,11 @@ div.stAlert div[role="alert"]{
 .needs-header{
   display:flex;
   flex-wrap:nowrap;
-  gap:4px;
+  gap:2px;
   align-items:center;
-  padding:8px;
+  padding:6px;
   border-radius:8px;
-  margin-bottom:6px;
+  margin-bottom:4px;
   background:#D1E9FF;
   color:var(--TITLE_BLUE);
   font-weight:800;
@@ -135,11 +135,12 @@ button[data-testid="baseButton-secondary"] {
   color: white !important;
   border: none !important;
   border-radius:6px !important;
-  padding: 6px 10px !important;
+  padding: 4px 8px !important;
   font-size: 12px !important;
   cursor: pointer !important;
   height: auto !important;
-  min-height: 30px !important;
+  min-height: 28px !important;
+  margin-left: 4px; /* مساحة بسيطة من اليوم */
 }
 div.row-widget.stHorizontal {
   flex-wrap: nowrap !important;
@@ -148,17 +149,28 @@ div.row-widget.stHorizontal {
 }
 [data-testid="column"] {
   flex: none !important;
-  min-width: 80px;
-  padding: 0 4px;
+  padding: 0 2px;
   box-sizing: border-box;
 }
+
+/* Media queries للموبايل والويب */
 @media (max-width: 600px) {
-  .top-actions {flex-direction:row; gap:4px;}
+  .top-actions {flex-direction:row; gap:2px;}
   .top-actions button {height:40px; font-size:0.9rem;}
   div.row-widget.stHorizontal {flex-wrap: nowrap !important; overflow-x: auto !important;}
-  [data-testid="column"] {min-width: 60px;}
-  .needs-item {font-size:0.85rem;}
-  .block-container {padding:0 5px;}
+  [data-testid="column"] {min-width: 50px; padding: 0 2px;}
+  .needs-item {font-size:0.9rem;}
+  .needs-row {padding: 4px; gap: 1px;}
+  button[data-testid="baseButton-secondary"] {padding: 2px 6px !important; font-size: 10px !important; min-height: 24px !important;}
+  .block-container {padding: 0 5px;}
+  h1.title {font-size: 1.8rem;}
+}
+
+@media (min-width: 601px) {
+  [data-testid="column"] {min-width: 80px;}
+  .needs-item {font-size: 1rem;}
+  .needs-row {padding: 8px; gap: 4px;}
+  button[data-testid="baseButton-secondary"] {padding: 6px 10px !important; font-size: 12px !important; min-height: 30px !important;}
 }
 </style>
 """, unsafe_allow_html=True)
@@ -235,7 +247,7 @@ def render_needs_table_todo(df: pd.DataFrame):
 
     st.markdown('<div class="center-title">قائمة النواقص</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="needs-header" dir="rtl"><div>النواقص</div><div>الحالة</div><div>اليوم</div><div>إجراءات</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="needs-header" dir="rtl"><div>النواقص</div><div>الحالة</div><div>اليوم/إجراءات</div></div>', unsafe_allow_html=True)
 
     for idx, r in df.iterrows():
         raw_value = r.get("النواقص", "-")
@@ -250,7 +262,7 @@ def render_needs_table_todo(df: pd.DataFrame):
         row_container = st.container()
         
         with row_container:
-            col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
+            col1, col2, col3 = st.columns([4, 1, 1])  # زيادة مساحة النواقص إلى 4، وتقليص الآخرين
             with col1:
                 st.markdown(f'<div class="needs-item" style="padding: 4px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
             with col2:
@@ -258,16 +270,17 @@ def render_needs_table_todo(df: pd.DataFrame):
                 st.markdown(f'<div style="padding: 4px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
             with col3:
                 day = r.get('اليوم', '-')
-                st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em;">{html_lib.escape(str(day))}</div>', unsafe_allow_html=True)
-            with col4:
                 del_key = f"del_btn__{idx}"
-                if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
-                    st.session_state["deleted_items"].add(item_value)
-                    try:
-                        submit_to_form(item_value, "حذف")
-                    except Exception:
-                        pass
-                    st.rerun()
+                col3_container = st.container()
+                with col3_container:
+                    st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em; display: flex; align-items: center; justify-content: center;">{html_lib.escape(str(day))}</div>', unsafe_allow_html=True)
+                    if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
+                        st.session_state["deleted_items"].add(item_value)
+                        try:
+                            submit_to_form(item_value, "حذف")
+                        except Exception:
+                            pass
+                        st.rerun()
             
             st.markdown('<hr style="margin: 4px 0; border: 1px solid #eef3f9;">', unsafe_allow_html=True)
 
