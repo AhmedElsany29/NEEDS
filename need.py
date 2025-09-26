@@ -27,7 +27,7 @@ CSV_URL = (
 )
 
 # ===================== صفحة التطبيق =====================
-st.set_page_config(page_title="النواقص", page_icon="📝", layout="centered")
+st.set_page_config(page_title="النواقص", page_icon="📝", layout="wide")
 
 # ———————— ثيم أبيض + نص أزرق ————————
 st.markdown("""
@@ -40,10 +40,10 @@ st.markdown("""
 
 /* اتجاه وخلفية */
 html, body, [data-testid="stAppViewContainer"]{
-  direction:rtl; background:#FFFFFF; color:var(--PRIMARY);
+  direction:rtl; background:#FFFFFF; color:var(--PRIMARY); overflow-x: hidden; /* Prevent horizontal overflow */
 }
 [data-testid="stHeader"]{background:transparent}
-.block-container{max-width:900px;padding-top:.5rem}
+.block-container{max-width:100%; padding-top:.5rem; width:100%; margin:0 auto;}
 
 /* العنوان */
 h1.title{
@@ -52,10 +52,10 @@ h1.title{
 }
 
 /* أزرار الملاحة */
-.top-actions{display:flex;gap:14px;justify-content:space-between;align-items:center;margin:6px 0 16px}
+.top-actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:6px 0 16px}
 .top-actions button{
-  flex:1; height:60px; border-radius:12px;
-  font-weight:800; font-size:1.05rem;
+  flex:1; height:50px; border-radius:12px;
+  font-weight:800; font-size:1rem;
   background:var(--PRIMARY) !important; color:#fff !important; border:none !important;
 }
 .top-actions button:hover{background:var(--PRIMARY_DARK) !important}
@@ -68,7 +68,8 @@ label p{font-size:1rem; font-weight:700; color:var(--TITLE_BLUE)}
 [data-testid="stTextInput"] input,
 [data-testid="stSelectbox"] div[role="combobox"]{
   background:#fff !important; color:var(--TITLE_BLUE) !important;
-  border:1.7px solid var(--PRIMARY); border-radius:12px; padding:14px 16px; font-size:1.05rem; height:52px;
+  border:1.7px solid var(--PRIMARY); border-radius:12px; padding:12px; font-size:1rem; height:48px;
+  width:100%; box-sizing:border-box;
 }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stSelectbox"] div[role="combobox"]:focus-within{
@@ -79,7 +80,8 @@ label p{font-size:1rem; font-weight:700; color:var(--TITLE_BLUE)}
 /* زر أساسي */
 button[kind="primary"]{
   background:var(--PRIMARY) !important; color:#fff !important; border:none !important;
-  border-radius:12px !important; height:56px !important; font-weight:800 !important; font-size:1.05rem !important;
+  border-radius:12px !important; height:50px !important; font-weight:800 !important; font-size:1rem !important;
+  width:100%;
 }
 button[kind="primary"]:hover{background:var(--PRIMARY_DARK) !important}
 
@@ -89,63 +91,63 @@ div.stAlert div[role="alert"]{
   background:#FFE7E7 !important;
   border:2px solid #E53935 !important;
   color:#B71C1C !important;
-  border-radius:12px; padding:14px 16px;
+  border-radius:12px; padding:12px;
 }
-div.stAlert svg{color:#E53935 !important}
 
 /* جدول HTML المخصص بألوان واضحة */
-.needs-wrap{margin-top:10px}
+.needs-wrap{margin-top:10px; width:100%; box-sizing:border-box;}
 .needs-row{
   display:grid;
-  grid-template-columns: 1fr 120px 120px 80px;
-  gap:8px;
+  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* Flexible ratios */
+  gap:4px;
   align-items:center;
-  padding:10px;
-  border-radius:10px;
+  padding:8px;
+  border-radius:8px;
   border:1px solid #E3F2FD;
-  margin-bottom:8px;
-  background:#FFFFF0;
-  min-height: 60px;
-  color: #0f172a; /* Default dark text for light background */
-}
-.needs-row[style*="background: #0f172a"] {
-  color: #e3f2fd; /* Light text for dark background */
+  margin-bottom:6px;
+  background:#E3F2FD !important;
+  min-height: 50px;
+  color: #0f172a;
+  width:100%; /* Ensure full width */
 }
 .needs-header{
   display:grid;
-  grid-template-columns: 1fr 120px 120px 80px;
-  gap:8px;
+  grid-template-columns: 2fr 1fr 1fr 0.5fr;
+  gap:4px;
   align-items:center;
-  padding:10px;
-  border-radius:10px;
+  padding:8px;
+  border-radius:8px;
   margin-bottom:6px;
-  background:#E3F2FD;
+  background:#D1E9FF;
   color:var(--TITLE_BLUE);
   font-weight:800;
   border: 2px solid var(--PRIMARY);
 }
 .needs-item{
   font-weight:700;
-  color: inherit; /* Inherits from parent .needs-row */
+  color: inherit;
   font-size: 1rem;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for long text */
 }
 .done{text-decoration:line-through; color:#9CA3AF}
 .center-title{
   width:100%; 
   display:block; 
-  background:#0f172a; 
-  color:#fff; 
+  background:#E3F2FD;
+  color:#0f172a;
   text-align:center;
-  padding:12px 10px; 
-  border-radius:10px; 
-  margin:6px 0 14px; 
+  padding:10px; 
+  border-radius:8px; 
+  margin:6px 0 12px; 
   font-weight:800;
 }
 
 /* تنسيق الأزرار الصغيرة في الجدول */
 .action-buttons {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
   justify-content: center;
 }
@@ -155,18 +157,18 @@ button[data-testid="baseButton-secondary"] {
   background: #dc2626 !important;
   color: white !important;
   border: none !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-  font-size: 16px !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important; /* Smaller for mobile */
   cursor: pointer !important;
   height: auto !important;
-  min-height: 36px !important;
+  min-height: 30px !important;
 }
 
 button[data-testid="baseButton-secondary"]:hover {
   background: #b91c1c !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3) !important;
 }
 
 /* ضمان أن النصوص في الجدول واضحة */
@@ -176,6 +178,19 @@ button[data-testid="baseButton-secondary"]:hover {
 .needs-header div {
   color: inherit !important;
   background: transparent !important;
+}
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 600px) {
+  .top-actions {flex-direction:column; gap:6px;}
+  .top-actions button {width:100%; height:40px; font-size:0.9rem;}
+  .needs-row {grid-template-columns: 2fr 1fr 1fr 0.5fr; padding:6px; font-size:0.9rem;}
+  .needs-header {grid-template-columns: 2fr 1fr 1fr 0.5fr; padding:6px; font-size:0.9rem;}
+  button[kind="primary"] {height:40px; font-size:0.9rem;}
+  [data-testid="stTextInput"] input, [data-testid="stSelectbox"] div[role="combobox"] {height:40px; font-size:0.9rem; padding:8px;}
+  .needs-item {font-size:0.85rem;}
+  .block-container {padding:0 10px;} /* Add padding for mobile */
+  html, body {overflow-x: hidden; max-width: 100vw;}
 }
 </style>
 """, unsafe_allow_html=True)
@@ -199,7 +214,6 @@ def fetch_responses_csv(url: str) -> pd.DataFrame:
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(rows[1:], columns=rows[0])
-    # إزالة الصفوف التي فيها خانات نواقص فارغة أو مسافات
     if "النواقص" in df.columns:
         df["النواقص"] = df["النواقص"].astype(str).str.strip()
         df = df[df["النواقص"] != ""]
@@ -226,13 +240,10 @@ def submit_to_form(missing_text: str, status_value: str) -> bool:
 
 # ================ حالة الجلسة: العلامات والحذف ==================
 if "done_items" not in st.session_state:
-    # done_items: dict mapping item_value -> timestamp when marked done
     st.session_state["done_items"] = {}
 if "deleted_items" not in st.session_state:
-    # deleted_items: set of item_values removed by user (local only)
     st.session_state["deleted_items"] = set()
 
-# تنظيف done_items القديمة (TTL) بحيث تعود للظهور بعد 24 ساعة
 def cleanup_done_items():
     now = time.time()
     to_del = [k for k, t in st.session_state["done_items"].items() if now - t >= CHECK_TTL_SECONDS]
@@ -243,7 +254,6 @@ cleanup_done_items()
 
 # ========== دالة عرض الجدول التفاعلي مع خط وحذف (محسّنة) ==========
 def render_needs_table_todo(df: pd.DataFrame):
-    # الأحدث أولاً إذا كان هنالك Timestamp
     if "Timestamp" in df.columns:
         ts = pd.to_datetime(df["Timestamp"], errors="coerce")
         df = df.assign(_ts=ts).sort_values("_ts", ascending=False).drop(columns="_ts")
@@ -258,59 +268,42 @@ def render_needs_table_todo(df: pd.DataFrame):
 
     st.markdown('<div class="center-title">قائمة النواقص</div>', unsafe_allow_html=True)
     
-    # عرض العناوين
     st.markdown('<div class="needs-header" dir="rtl"><div>النواقص</div><div>الحالة</div><div>اليوم/التاريخ</div><div>إجراءات</div></div>', unsafe_allow_html=True)
 
-    # عرض كل صف
     for idx, r in df.iterrows():
-        # ناخذ قيمة العنصر ونستخدم نسخة مهربة (escaped) للعرض داخل HTML
         raw_value = r.get("النواقص", "-")
         item_value = str(raw_value) if raw_value is not None else "-"
         item_value = item_value.strip() or "-"
 
-        # إذا المستخدم حذف العنصر محليًا، ما نظهره
         if item_value in st.session_state["deleted_items"]:
             continue
 
         is_done = item_value in st.session_state["done_items"]
         
-        # إنشاء container للصف
         row_container = st.container()
         
         with row_container:
-            # تقسيم الأعمدة
-            col1, col2, col3, col4 = st.columns([4, 1.2, 1.2, 1])
-            
-            # العمود الأول: النواقص
+            col1, col2, col3, col4 = st.columns([2, 1, 1, 0.5])  # Adjusted column ratios
             with col1:
-                st.markdown(f'<div class="needs-item" style="padding: 10px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
-            
-            # العمود الثاني: الحالة
+                st.markdown(f'<div class="needs-item" style="padding: 6px;">{html_lib.escape(item_value)}</div>', unsafe_allow_html=True)
             with col2:
                 status = r.get('حالته', '-')
-                st.markdown(f'<div style="padding: 10px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
-            
-            # العمود الثالث: اليوم والتاريخ
+                st.markdown(f'<div style="padding: 6px; text-align: center;"><strong>{html_lib.escape(str(status))}</strong></div>', unsafe_allow_html=True)
             with col3:
                 day = r.get('اليوم', '-')
                 datev = r.get('التاريخ', '-')
-                st.markdown(f'<div style="padding: 10px; text-align: center; font-size: 0.9em;">{html_lib.escape(str(day))}<br/>{html_lib.escape(str(datev))}</div>', unsafe_allow_html=True)
-            
-            # العمود الرابع: الإجراءات
+                st.markdown(f'<div style="padding: 6px; text-align: center; font-size: 0.9em;">{html_lib.escape(str(day))}<br/>{html_lib.escape(str(datev))}</div>', unsafe_allow_html=True)
             with col4:
-                # زر الحذف
                 del_key = f"del_btn__{idx}"
                 if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
                     st.session_state["deleted_items"].add(item_value)
-                    # إرسال حالة حذف (اختياري)
                     try:
                         submit_to_form(item_value, "حذف")
                     except Exception:
                         pass
                     st.rerun()
             
-            # خط فاصل
-            st.markdown('<hr style="margin: 5px 0; border: 1px solid #eef3f9;">', unsafe_allow_html=True)
+            st.markdown('<hr style="margin: 4px 0; border: 1px solid #eef3f9;">', unsafe_allow_html=True)
 
 
 # ===================== أزرار الملاحة =====================
@@ -321,7 +314,7 @@ with c1:
 with c2:
     if st.button("القائمة", key="go_list", use_container_width=True, type="primary"):
         st.session_state["view"] = "list"
-view = st.session_state.get("view", "add")
+view = st.session_state.get("view", "list")
 
 # ===================== إضافة =====================
 if view == "add":
@@ -331,7 +324,7 @@ if view == "add":
 
     options = ["قرب يخلص", "خلص"]
     status_index_default = options.index("خلص")
-    status  = st.selectbox("حالته *", options, index=status_index_default)
+    status = st.selectbox("حالته *", options, index=status_index_default)
 
     left, right = st.columns(2)
     dname, diso = today_ar_and_iso()
