@@ -239,6 +239,8 @@ def render_needs_table_todo(df: pd.DataFrame):
 
     if "النواقص" in df.columns:
         df = df.dropna(subset=["النواقص"]).drop_duplicates(subset=["النواقص"], keep="first")
+        # إزالة العناصر المحذوفة من الـ DataFrame المحلي
+        df = df[~df["النواقص"].isin(st.session_state["deleted_items"])]
 
     cols = [c for c in ["النواقص", "حالته", "اليوم"] if c in df.columns]
     if not cols:
@@ -276,10 +278,8 @@ def render_needs_table_todo(df: pd.DataFrame):
                     st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em; display: flex; align-items: center; justify-content: center;">{html_lib.escape(str(day))}</div>', unsafe_allow_html=True)
                     if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
                         st.session_state["deleted_items"].add(item_value)
-                        try:
-                            submit_to_form(item_value, "حذف")
-                        except Exception:
-                            pass
+                        # للحذف الدائم، تحتاج إلى استخدام Google Sheets API لتحديث الجدول
+                        # حاليًا، الحذف يتم محليًا فقط
                         st.rerun()
             
             st.markdown('<hr style="margin: 4px 0; border: 1px solid #eef3f9;">', unsafe_allow_html=True)
