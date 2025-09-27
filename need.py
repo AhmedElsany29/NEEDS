@@ -194,9 +194,10 @@ def fetch_responses_csv(url: str) -> pd.DataFrame:
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(rows[1:], columns=rows[0])
-    if "النواقص" in df.columns:
+    if "النواقص" in df.columns and "حالته" in df.columns:
         df["النواقص"] = df["النواقص"].astype(str).str.strip()
         df = df[df["النواقص"] != ""]
+        df = df[df["حالته"] != "محذوف"]  # تصفية العناصر المحذوفة
     return df
 
 def submit_to_form(missing_text: str, status_value: str) -> bool:
@@ -237,10 +238,9 @@ def render_needs_table_todo(df: pd.DataFrame):
         ts = pd.to_datetime(df["Timestamp"], errors="coerce")
         df = df.assign(_ts=ts).sort_values("_ts", ascending=False).drop(columns="_ts")
 
-    if "النواقص" in df.columns:
+    if "النواقص" in df.columns and "حالته" in df.columns:
         df = df.dropna(subset=["النواقص"]).drop_duplicates(subset=["النواقص"], keep="first")
-        # إزالة العناصر المحذوفة من الـ DataFrame المحلي
-        df = df[~df["النواقص"].isin(st.session_state["deleted_items"])]
+        df = df[df["حالته"] != "محذوف"]  # تصفية العناصر المحذوفة
 
     cols = [c for c in ["النواقص", "حالته", "اليوم"] if c in df.columns]
     if not cols:
@@ -278,9 +278,16 @@ def render_needs_table_todo(df: pd.DataFrame):
                     st.markdown(f'<div style="padding: 4px; text-align: center; font-size: 0.85em; display: flex; align-items: center; justify-content: center;">{html_lib.escape(str(day))}</div>', unsafe_allow_html=True)
                     if st.button("🗑️", key=del_key, help="حذف العنصر", type="secondary"):
                         st.session_state["deleted_items"].add(item_value)
-                        # للحذف الدائم، تحتاج إلى استخدام Google Sheets API لتحديث الجدول
-                        # حاليًا، الحذف يتم محليًا فقط
-                        st.rerun()
+                        try:
+                            # إرسال طلب حذف للـ Form بتغيير الحالة إلى "محذوف"
+                            if submit_to_form(item_value, "محذوف"):
+                                st.success("تم الحذف بنجاح!")
+                                st.cache_data.clear()  # تحديث البيانات
+                                st.rerun()
+                            else:
+                                st.error("فشل الحذف — حاول مرة أخرى.")
+                        except Exception:
+                            st.error("خطأ أثناء الحذف.")
             
             st.markdown('<hr style="margin: 4px 0; border: 1px solid #eef3f9;">', unsafe_allow_html=True)
 
